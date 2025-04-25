@@ -5,7 +5,7 @@ import (
 )
 
 type Repository interface {
-	CreateOrUpdate(
+	Create(
 		ctx context.Context,
 		customer *Customer,
 	) error

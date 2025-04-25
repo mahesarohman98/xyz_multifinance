@@ -4,10 +4,12 @@ CREATE TABLE IF NOT EXISTS Customers (
     full_name VARCHAR(100) NOT NULL,
     legal_name VARCHAR(100) NOT NULL,
     place_of_birth VARCHAR(100) NOT NULL,
-    date_of_birth VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
     wages VARCHAR(100) NOT NULL,
     ktp_photo_url VARCHAR(100) NOT NULL,
-    photo_url VARCHAR(100) NOT NULL
+    photo_url VARCHAR(100) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS Tenors (

@@ -64,7 +64,7 @@ func (h registerNewCustomerHandler) Handle(ctx context.Context, cmd RegisterNewC
 		return err
 	}
 
-	if err := h.repo.CreateOrUpdate(ctx, customer); err != nil {
+	if err := h.repo.Create(ctx, customer); err != nil {
 		return err
 	}
 
