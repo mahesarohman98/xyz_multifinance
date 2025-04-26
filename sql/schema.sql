@@ -12,10 +12,11 @@ CREATE TABLE IF NOT EXISTS Customers (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS Tenors (
-    customer_id VARCHAR(100) PRIMARY KEY,
-    month INTEGER PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS TenorLimits (
+    customer_id VARCHAR(100),
+    month INTEGER,
     amount DECIMAL NOT NULL,
+    PRIMARY KEY(customer_id, month),
     FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
 );
 
