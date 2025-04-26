@@ -78,3 +78,27 @@ func (c *CreditLimit) AddTenor(monthRange int, limitAmount float64) error {
 
 	return nil
 }
+
+func (c *CreditLimit) DecreaseLimit(monthRange int, totalBorowed float64) error {
+
+	index := -1
+	for i, t := range c.Tenors {
+		if t.MonthRange == monthRange {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		return errors.New("month range not found")
+	}
+
+	usedAmount := c.Tenors[index].UsedAmount + totalBorowed
+	if usedAmount > c.Tenors[index].LimitAmount {
+		return errors.New("limit to borowed exceeded")
+	}
+
+	c.Tenors[index].UsedAmount = usedAmount
+
+	return nil
+}

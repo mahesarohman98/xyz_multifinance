@@ -44,3 +44,29 @@ func SeedCustomer(t *testing.T, db *sqlx.DB, id, name string, nik string) {
 		t.Fatalf("failed to seed customer: %v", err)
 	}
 }
+
+func SeedSources(t *testing.T, db *sqlx.DB) {
+	t.Helper()
+	t.Helper()
+
+	const query = `
+	INSERT INTO Sources (
+		source_id,
+		category,
+		name
+	) VALUES (?, ?, ?), (?, ?, ?)
+	`
+
+	_, err := db.Exec(query,
+		"sourceid-1",
+		"ecommerce",
+		"tokopakedi",
+
+		"sourceid-2",
+		"dealer",
+		"dealer name",
+	)
+	if err != nil {
+		t.Fatalf("failed to seed source: %v", err)
+	}
+}

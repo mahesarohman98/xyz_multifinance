@@ -1,16 +1,18 @@
 package mysql
 
 import (
+	"database/sql"
+	"os"
+
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
-	"os"
 )
 
 const MySQLDeadlockErrorCode = 1213
 
-func finishTransaction(err error, tx *sqlx.Tx) error {
+func FinishTransaction(err error, tx *sql.Tx) error {
 	if err != nil {
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
 			return multierr.Combine(err, rollbackErr)
