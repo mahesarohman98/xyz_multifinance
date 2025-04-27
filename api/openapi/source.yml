@@ -41,9 +41,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
+                $ref: "#/components/schemas/TokenResponse"
               example:
-                message: "Source created successfully."
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                tokenType: "Bearer"
+                expiresIn: "3600"
         default:
           description: Unexpected error occurred.
           content:
@@ -142,16 +144,6 @@ components:
         expiresIn:
           type: number
           description: "Expiration time in seconds."
-
-    Message:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-          description: "Message indicating the result of the API call."
-          example: "Source created successfully."
 
     Error:
       type: object

@@ -12,12 +12,6 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-// Message defines model for Message.
-type Message struct {
-	// Message Message indicating the result of the API call.
-	Message string `json:"message"`
-}
-
 // Source defines model for Source.
 type Source struct {
 	// Category Category of the source (e.g., Ecommerce, Dealer, Web).

@@ -23,7 +23,7 @@ type Source struct {
 	Email    string
 }
 
-func (u Usecase) Register(ctx context.Context, request Source) error {
+func (u Usecase) Register(ctx context.Context, request Source) (*model.Source, error) {
 	source := &model.Source{
 		ID:         request.ID,
 		SecretHash: "",
@@ -33,14 +33,14 @@ func (u Usecase) Register(ctx context.Context, request Source) error {
 	}
 
 	if err := source.GenerateHashFromSecret(request.Secret); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := u.repo.Create(ctx, source); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return source, nil
 
 }
 
