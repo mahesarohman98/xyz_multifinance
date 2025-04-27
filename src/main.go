@@ -9,6 +9,8 @@ import (
 	customerService "xyz_multifinance/src/internal/customer/service"
 	"xyz_multifinance/src/internal/shared/logs"
 	"xyz_multifinance/src/internal/shared/server"
+	transactionPort "xyz_multifinance/src/internal/transaction/ports"
+	transactionService "xyz_multifinance/src/internal/transaction/service"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,6 +22,7 @@ func main() {
 
 	customerService := customerService.NewApplication(ctx)
 	creditLimitService := creditlimitService.NewApplication(ctx)
+	transactionService := transactionService.NewApplication(ctx)
 
 	server.RunHTTPServer(func(router chi.Router) http.Handler {
 		customerPorts.HandlerWithOptions(
@@ -30,11 +33,20 @@ func main() {
 			},
 		)
 
-		return creditLimitPorts.HandlerWithOptions(
+		creditLimitPorts.HandlerWithOptions(
 			creditLimitPorts.NewHttpServer(creditLimitService),
 			creditLimitPorts.ChiServerOptions{
 				BaseRouter:  router,
 				Middlewares: []creditLimitPorts.MiddlewareFunc{},
-			})
+			},
+		)
+
+		return transactionPort.HandlerWithOptions(
+			transactionPort.NewHttpServer(transactionService), transactionPort.ChiServerOptions{
+				BaseRouter:  router,
+				Middlewares: []transactionPort.MiddlewareFunc{},
+			},
+		)
+
 	})
 }
