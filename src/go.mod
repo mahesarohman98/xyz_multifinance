@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.3
 	github.com/go-sql-driver/mysql v1.9.2
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/oapi-codegen/runtime v1.1.1
@@ -14,6 +15,8 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	go.uber.org/multierr v1.11.0
+	golang.org/x/crypto v0.37.0
+	golang.org/x/net v0.37.0
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )
 
@@ -26,7 +29,6 @@ require (
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.37.0 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/term v0.31.0 // indirect
 )

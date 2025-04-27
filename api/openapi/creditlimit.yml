@@ -24,6 +24,8 @@ paths:
         This endpoint allows setting the initial credit limit for a customer.
         Typically used after customer verification by an admin.
       operationId: SetInitialCreditLimit
+      security:
+        - bearerAuth: []
       parameters:
         - name: customerId
           in: path
@@ -67,6 +69,11 @@ paths:
                 message: "Internal Server Error"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     InitialTenorLimits:
       type: array

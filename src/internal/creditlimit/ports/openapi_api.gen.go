@@ -4,6 +4,7 @@
 package ports
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -50,6 +51,12 @@ func (siw *ServerInterfaceWrapper) SetInitialCreditLimit(w http.ResponseWriter, 
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
 		return
 	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	r = r.WithContext(ctx)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetInitialCreditLimit(w, r, customerId)

@@ -2,6 +2,7 @@ package ports
 
 import (
 	"net/http"
+	"xyz_multifinance/src/internal/shared/auth"
 	"xyz_multifinance/src/internal/shared/server/httperr"
 	"xyz_multifinance/src/internal/transaction/app"
 	"xyz_multifinance/src/internal/transaction/app/command"
@@ -21,6 +22,12 @@ func NewHttpServer(service app.Application) HttpServer {
 }
 
 func (h HttpServer) SubmitLoan(w http.ResponseWriter, r *http.Request) {
+	sourceID, err := auth.SourceIDFromCtx(r.Context())
+	if err != nil {
+		httperr.RespondWithSlugError(err, w, r)
+		return
+
+	}
 	request := &SubmitLoanJSONRequestBody{}
 	if err := render.Decode(r, request); err != nil {
 		httperr.BadRequest(err.Error(), err, w, r)
@@ -32,8 +39,7 @@ func (h HttpServer) SubmitLoan(w http.ResponseWriter, r *http.Request) {
 			ID         string
 			ExternalID string
 		}{
-			// TODO: authenticate source
-			ID:         "sourceid-1",
+			ID:         sourceID,
 			ExternalID: request.ExternalId,
 		},
 		Tenor: request.Tenor,

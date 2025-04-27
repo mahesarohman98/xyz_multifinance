@@ -1,0 +1,169 @@
+openapi: "3.0.0"
+info:
+  title: Source API
+  description: API for authenticating sources.
+  contact:
+    name: Mahesa Rohman
+    email: mahesarohman30@gmail.com
+  version: 1.0.0
+servers:
+  - url: "{protocol}://{hostname}/api/v1"
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      hostname:
+        default: localhost:3000
+
+paths:
+  /sources:
+    post:
+      summary: Register a new Source
+      description: Register a new source (such as an ecommerce platform or a dealer) by providing basic details.
+      operationId: RegisterNewSource
+      requestBody:
+        required: true
+        description: Information needed to create a new source.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Source"
+            example:
+              secret: "topsecretpassword"
+              category: "ECommerce"
+              name: "Tokopedia"
+              email: "partner@tokopedia.com"
+      responses:
+        '201':
+          description: Source successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: "Source created successfully."
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+
+  /sources/token:
+    post:
+      summary: Client login to obtain JWT
+      description: Generate a JWT token for a source to authenticate in the system.
+      operationId: TokenGeneration
+      requestBody:
+        required: true
+        description: Credentials required to obtain a token.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRequest"
+            example:
+              sourceId: "source-12345"
+              sourceSecret: "topsecretpassword"
+      responses:
+        '200':
+          description: Token successfully generated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+              example:
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                tokenType: "Bearer"
+                expiresIn: "3600"
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+
+components:
+  schemas:
+    Source:
+      type: object
+      required:
+        - secret
+        - category
+        - name
+        - email
+      properties:
+        secret:
+          type: string
+          description: "Password for authenticating the source."
+        category:
+          type: string
+          description: "Category of the source (e.g., Ecommerce, Dealer, Web)."
+        name:
+          type: string
+          description: "Name of the source (e.g., Tokopedia, Dealer ABC)."
+        email:
+          type: string
+          description: "Email contact for the source."
+
+    TokenRequest:
+      type: object
+      required:
+        - sourceId
+        - sourceSecret
+      properties:
+        sourceId:
+          type: string
+          description: "ID of the source."
+        sourceSecret:
+          type: string
+          description: "Password (secret) associated with the source."
+
+    TokenResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          description: "JWT access token."
+        tokenType:
+          type: string
+          description: "Type of the token, typically 'Bearer'."
+        expiresIn:
+          type: number
+          description: "Expiration time in seconds."
+
+    Message:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: "Message indicating the result of the API call."
+          example: "Source created successfully."
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: "Error code indicating the type of error."
+          example: "500"
+        message:
+          type: string
+          description: "Detailed error message."
+          example: "Internal Server Error."

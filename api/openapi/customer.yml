@@ -22,6 +22,8 @@ paths:
       summary: Register a new customer
       description: This endpoint allows you to register a new customer by providing their personal details.
       operationId: RegisterNewCustomer
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         description: Information needed to create a new customer.
@@ -56,6 +58,11 @@ paths:
                 message: "Internal Server Error"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Customer:
       type: object
@@ -111,3 +118,4 @@ components:
           type: string
           description: "Detailed error message."
           example: "Internal Server Error"
+
