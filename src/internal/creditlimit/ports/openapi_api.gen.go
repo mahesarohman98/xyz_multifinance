@@ -14,6 +14,9 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Get Initial Credit Limits
+	// (GET /customers/{customerId}/credit-limits)
+	GetInitialCreditLimit(w http.ResponseWriter, r *http.Request, customerId string)
 	// Set Initial Credit Limit
 	// (POST /customers/{customerId}/credit-limits)
 	SetInitialCreditLimit(w http.ResponseWriter, r *http.Request, customerId string)
@@ -22,6 +25,12 @@ type ServerInterface interface {
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
+
+// Get Initial Credit Limits
+// (GET /customers/{customerId}/credit-limits)
+func (_ Unimplemented) GetInitialCreditLimit(w http.ResponseWriter, r *http.Request, customerId string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
 
 // Set Initial Credit Limit
 // (POST /customers/{customerId}/credit-limits)
@@ -37,6 +46,37 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// GetInitialCreditLimit operation middleware
+func (siw *ServerInterfaceWrapper) GetInitialCreditLimit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInitialCreditLimit(w, r, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
 
 // SetInitialCreditLimit operation middleware
 func (siw *ServerInterfaceWrapper) SetInitialCreditLimit(w http.ResponseWriter, r *http.Request) {
@@ -182,6 +222,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/customers/{customerId}/credit-limits", wrapper.GetInitialCreditLimit)
+	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/customers/{customerId}/credit-limits", wrapper.SetInitialCreditLimit)
 	})

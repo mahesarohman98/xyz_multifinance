@@ -31,6 +31,7 @@ func NewApplication(ctx context.Context) app.Application {
 		},
 		Queries: app.Queries{
 			GetTotalUsedByCustomerAndTenor: query.NewGetTotalUsedByCustomerAndTenorHandler(repo, logger, metricsClient),
+			GetCreditLimitByCustomerID:     query.NewGetCreditLimitByCustomerHandler(repo, logger, metricsClient),
 		},
 	}
 }
