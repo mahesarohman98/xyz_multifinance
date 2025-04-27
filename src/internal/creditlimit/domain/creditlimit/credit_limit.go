@@ -53,7 +53,7 @@ func (c *CreditLimit) AddTenor(monthRange int, limitAmount float64) error {
 		insertIndex += 1
 	}
 	if insertIndex >= len(c.Tenors) {
-		if insertIndex-1 > 0 && c.Tenors[insertIndex-1].LimitAmount < limitAmount {
+		if insertIndex-1 > 0 && c.Tenors[insertIndex-1].LimitAmount >= limitAmount {
 			return ErrLimitMustBeGreater
 		}
 		c.Tenors = append(c.Tenors, Tenor{

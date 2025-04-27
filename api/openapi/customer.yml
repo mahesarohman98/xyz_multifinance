@@ -88,7 +88,7 @@ components:
           type: number
           format: double
           description: "Monthly wage of the customer."
-          example: 5000.75
+          example: 5000000
 
     Message:
       type: object

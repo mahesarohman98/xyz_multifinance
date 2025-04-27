@@ -296,6 +296,49 @@ func TestAddTenorLimit(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "insert 3 (2)",
+			creditLimit: &CreditLimit{
+				CustomerID: "customerid-1",
+				Tenors: []Tenor{
+					{
+						MonthRange:  1,
+						LimitAmount: 100,
+						UsedAmount:  0,
+					},
+					{
+						MonthRange:  2,
+						LimitAmount: 200,
+						UsedAmount:  0,
+					},
+				},
+			},
+			args: args{
+				monthRange:  3,
+				limitAmount: 300,
+			},
+			wantErr: nil,
+			wantCreditLimit: &CreditLimit{
+				CustomerID: "customerid-1",
+				Tenors: []Tenor{
+					{
+						MonthRange:  1,
+						LimitAmount: 100,
+						UsedAmount:  0,
+					},
+					{
+						MonthRange:  2,
+						LimitAmount: 200,
+						UsedAmount:  0,
+					},
+					{
+						MonthRange:  3,
+						LimitAmount: 300,
+						UsedAmount:  0,
+					},
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
