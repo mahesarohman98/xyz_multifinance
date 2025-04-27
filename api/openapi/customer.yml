@@ -44,9 +44,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
+                $ref: "#/components/schemas/Customer"
               example:
-                message: "Customer created successfully."
+                id: "customer-uuid-1"
+                nik: "1234567890123456"
+                fullName: "John Doe"
+                legalName: "Johnathan Doe"
+                placeOfBirth: "Jakarta"
+                dateOfBirth: "1990-02-20"
+                wage: 5000000
         default:
           description: Unexpected error occurred.
           content:
@@ -57,6 +63,47 @@ paths:
                 code: "500"
                 message: "Internal Server Error"
 
+  /customers/{customerId}:
+    get:
+      summary: Get a customer by ID
+      description: |
+        This endpoint retrieves the details of a specific customer 
+        using their unique customer ID.
+      operationId: GetCustomerByID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+              example:
+                id: "customer-uuid-1"
+                nik: "1234567890123456"
+                fullName: "John Doe"
+                legalName: "Johnathan Doe"
+                placeOfBirth: "Jakarta"
+                dateOfBirth: "1990-02-20"
+                wage: 5000000
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+                
 components:
   securitySchemes:
     bearerAuth:
@@ -74,6 +121,9 @@ components:
         - dateOfBirth
         - wage
       properties:
+        id:
+          type: string
+          readOnly: true
         nik:
           type: string
           description: "National Identification Number (NIK) of the customer."
@@ -97,16 +147,6 @@ components:
           description: "Monthly wage of the customer."
           example: 5000000
 
-    Message:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-          description: "Message indicating the result of the API call."
-          example: "Customer created successfully."
-
     Error:
       type: object
       properties:
@@ -118,4 +158,5 @@ components:
           type: string
           description: "Detailed error message."
           example: "Internal Server Error"
+
 

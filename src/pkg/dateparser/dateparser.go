@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+func UnmarshallToString(date time.Time) string {
+	return date.Format("2006-01-02")
+}
+
 // ParseDate parses a date string with a 2006-01-02 layout
 func ParseDate(dateStr string) (time.Time, error) {
 	// Parse the date string into a time.Time object

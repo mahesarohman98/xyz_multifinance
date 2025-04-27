@@ -13,7 +13,8 @@ type Customer struct {
 	DateOfBirth string `json:"dateOfBirth"`
 
 	// FullName Full name of the customer.
-	FullName string `json:"fullName"`
+	FullName string  `json:"fullName"`
+	Id       *string `json:"id,omitempty"`
 
 	// LegalName The legal name of the customer as per official records.
 	LegalName string `json:"legalName"`
@@ -35,12 +36,6 @@ type Error struct {
 
 	// Message Detailed error message.
 	Message *string `json:"message,omitempty"`
-}
-
-// Message defines model for Message.
-type Message struct {
-	// Message Message indicating the result of the API call.
-	Message string `json:"message"`
 }
 
 // RegisterNewCustomerJSONRequestBody defines body for RegisterNewCustomer for application/json ContentType.

@@ -5,6 +5,7 @@ import (
 	"xyz_multifinance/src/internal/customer/adapter"
 	"xyz_multifinance/src/internal/customer/app"
 	"xyz_multifinance/src/internal/customer/app/command"
+	"xyz_multifinance/src/internal/customer/app/query"
 	"xyz_multifinance/src/internal/customer/domain/customer"
 	"xyz_multifinance/src/internal/shared/metrics"
 	"xyz_multifinance/src/internal/shared/mysql"
@@ -30,7 +31,9 @@ func NewApplication(ctx context.Context) app.Application {
 		Commands: app.Commands{
 			RegisterNewCustomer: command.NewRegisterNewCustomerHandler(factory, repo, logger, metricsClient),
 		},
-		Queries: app.Queries{},
+		Queries: app.Queries{
+			GetCustomerByID: query.NewGetCustomerByIDHandler(repo, logger, metricsClient),
+		},
 	}
 
 }
