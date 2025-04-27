@@ -24,8 +24,10 @@ CREATE TABLE IF NOT EXISTS TenorLimits (
 -- source example ecommerce, dealer, web
 CREATE TABLE IF NOT EXISTS Sources (
     source_id VARCHAR(100) PRIMARY KEY,
+    secret_hash VARCHAR(255),
     category VARCHAR(50) NOT NULL,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Transactions (
