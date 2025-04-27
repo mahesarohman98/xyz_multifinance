@@ -1,0 +1,113 @@
+openapi: "3.0.0"
+info:
+  title: Credit Limit API
+  description: API for managing customer credit limits, including setting initial limits after customer verification.
+  contact:
+    name: Mahesa Rohman
+    email: mahesarohman30@gmail.com
+  version: 1.0.0
+servers:
+  - url: "{protocol}://{hostname}/api/v1"
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      hostname:
+        default: localhost:3000
+paths:
+  /customers/{customerId}/credit-limits:
+    post:
+      summary: Set Initial Credit Limit
+      description: |
+        This endpoint allows setting the initial credit limit for a customer.
+        Typically used after customer verification by an admin.
+      operationId: SetInitialCreditLimit
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: List of tenor-based credit limits for the customer.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InitialTenorLimits"
+            example:
+              - monthRange: 1
+                limitAmount: 1000000
+              - monthRange: 2
+                limitAmount: 2000000
+              - monthRange: 3
+                limitAmount: 3000000
+              - monthRange: 6
+                limitAmount: 6000000
+      responses:
+        '201':
+          description: Initial credit limits created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: "Initial credit limits created successfully."
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+
+components:
+  schemas:
+    InitialTenorLimits:
+      type: array
+      description: List of initial credit limits for different tenor periods.
+      items:
+        type: object
+        required:
+          - monthRange
+          - limitAmount
+        properties:
+          monthRange:
+            type: integer
+            description: Duration of the credit limit in months.
+            example: 12
+          limitAmount:
+            type: number
+            format: double
+            description: Maximum credit limit for the given tenor.
+            example: 15000000.00
+
+    Message:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Message indicating the result of the API call.
+          example: "Initial credit limits created successfully."
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: HTTP error code.
+          example: "500"
+        message:
+          type: string
+          description: Detailed error message.
+          example: "Internal Server Error."

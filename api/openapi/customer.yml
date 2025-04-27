@@ -1,0 +1,113 @@
+openapi: "3.0.0"
+info:
+  title: Customers API
+  description: API for managing customer registrations, including their personal and financial details.
+  contact:
+    name: Mahesa Rohman
+    email: mahesarohman30@gmail.com
+  version: 1.0.0
+servers:
+  - url: "{protocol}://{hostname}/api/v1"
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      hostname:
+        default: localhost:3000
+paths:
+  /customers:
+    post:
+      summary: Register a new customer
+      description: This endpoint allows you to register a new customer by providing their personal details.
+      operationId: RegisterNewCustomer
+      requestBody:
+        required: true
+        description: Information needed to create a new customer.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Customer"
+            example:
+              nik: "1234567890123456"
+              fullName: "John Doe"
+              legalName: "Johnathan Doe"
+              placeOfBirth: "Jakarta"
+              dateOfBirth: "1990-02-20"
+              wage: 5000000
+      responses:
+        '201':
+          description: Customer successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: "Customer created successfully."
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+
+components:
+  schemas:
+    Customer:
+      type: object
+      required:
+        - nik
+        - fullName
+        - legalName
+        - placeOfBirth
+        - dateOfBirth
+        - wage
+      properties:
+        nik:
+          type: string
+          description: "National Identification Number (NIK) of the customer."
+        fullName:
+          type: string
+          description: "Full name of the customer."
+        legalName:
+          type: string
+          description: "The legal name of the customer as per official records."
+        placeOfBirth:
+          type: string
+          description: "City or town where the customer was born."
+          example: "Jakarta"
+        dateOfBirth:
+          type: string
+          description: "Date of birth of the customer in ISO 8601 format (YYYY-MM-DD)."
+          example: "1990-02-20"
+        wage:
+          type: number
+          format: double
+          description: "Monthly wage of the customer."
+          example: 5000000
+
+    Message:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: "Message indicating the result of the API call."
+          example: "Customer created successfully."
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "Error code indicating the type of error."
+          example: "500"
+        message:
+          type: string
+          description: "Detailed error message."
+          example: "Internal Server Error"

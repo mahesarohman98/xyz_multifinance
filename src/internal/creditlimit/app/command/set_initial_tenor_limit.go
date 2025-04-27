@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"log"
 	"xyz_multifinance/src/internal/creditlimit/domain/creditlimit"
 	"xyz_multifinance/src/internal/shared/decorator"
 
@@ -42,6 +43,7 @@ func NewSetInitialTenorLimitHandler(
 func (h setInitialTenorLimitHandler) Handle(ctx context.Context, cmd SetInitialTenorLimit) error {
 	creditLimitUser := h.fc.MustNewCreditLimit(cmd.CustomerID)
 	for _, t := range cmd.Tenors {
+		log.Println("MonthRange:", t.MonthRange, "LimitAmount:", t.LimitAmount)
 		if err := creditLimitUser.AddTenor(t.MonthRange, t.LimitAmount); err != nil {
 			return err
 		}

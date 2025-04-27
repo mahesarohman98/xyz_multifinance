@@ -2,7 +2,6 @@ package command
 
 import (
 	"context"
-	"errors"
 	"xyz_multifinance/src/internal/shared/decorator"
 	transaction "xyz_multifinance/src/internal/transaction/domain/trasaction"
 
@@ -18,13 +17,13 @@ type Loan struct {
 }
 
 type SubmitLoan struct {
-	Source struct {
+	CustomerID string
+	Source     struct {
 		ID         string
 		ExternalID string
 	}
-	CustomerID string
-	Tenor      int
-	Loans      []Loan
+	Tenor int
+	Loans []Loan
 }
 
 type SubmitLoanHandler decorator.CommandHandler[SubmitLoan]
@@ -54,7 +53,7 @@ func (h submitLoadHandler) Handle(ctx context.Context, cmd SubmitLoan) error {
 	if err := h.repo.Create(
 		ctx,
 		func() ([]transaction.Transaction, error) {
-			totalTenorUsed, err := h.creditLimitQueryService.GetTotalUsedByCustomerAndTenor(
+			_, err := h.creditLimitQueryService.GetTotalUsedByCustomerAndTenor(
 				ctx, cmd.CustomerID, cmd.Tenor, true,
 			)
 			if err != nil {
@@ -81,11 +80,6 @@ func (h submitLoadHandler) Handle(ctx context.Context, cmd SubmitLoan) error {
 
 				totalBorrowAmount += tx.TotalBorowed()
 				transactions = append(transactions, *tx)
-			}
-
-			totalTenorUsed -= totalBorrowAmount
-			if totalTenorUsed <= 0 {
-				return []transaction.Transaction{}, errors.New("total tenor used exceed")
 			}
 
 			if err := h.creditLimitQueryService.DecreaseLimit(
