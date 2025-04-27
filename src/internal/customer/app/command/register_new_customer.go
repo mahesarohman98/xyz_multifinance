@@ -5,6 +5,7 @@ import (
 	"time"
 	"xyz_multifinance/src/internal/customer/domain/customer"
 	"xyz_multifinance/src/internal/shared/decorator"
+	"xyz_multifinance/src/internal/shared/errors"
 
 	"github.com/sirupsen/logrus"
 )
@@ -16,8 +17,8 @@ type RegisterNewCustomer struct {
 	NIK          string
 	Fullname     string
 	LegalName    string
-	placeOfBirth string
-	dateOfBirth  time.Time
+	PlaceOfBirth string
+	DateOfBirth  time.Time
 	Wage         float64
 	PhotoURL     string
 	KTPURL       string
@@ -53,19 +54,19 @@ func (h registerNewCustomerHandler) Handle(ctx context.Context, cmd RegisterNewC
 		cmd.NIK,
 		cmd.Fullname,
 		cmd.LegalName,
-		cmd.placeOfBirth,
-		cmd.dateOfBirth,
+		cmd.PlaceOfBirth,
+		cmd.DateOfBirth,
 		cmd.Wage,
 		cmd.PhotoURL,
 		cmd.KTPURL,
 		cmd.Today,
 	)
 	if err != nil {
-		return err
+		return errors.NewIncorrectInputError(err.Error(), "incorrect-register-customer")
 	}
 
 	if err := h.repo.Create(ctx, customer); err != nil {
-		return err
+		return errors.NewSlugError(err.Error(), "unable-to-create-customer")
 	}
 
 	return nil

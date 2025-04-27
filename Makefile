@@ -1,12 +1,25 @@
 include .env
 export
 
+.PHONY: openapi
+openapi: openapi_http
+
+.PHONY: openapi_http
+openapi_http:
+	@./scripts/openapi-http.sh customer src/internal/customer/ports ports
+
 .PHONY: mycli
 mysql:
 	docker exec -it mysql mysql -u$(MYSQL_USER) -p$(MYSQL_PASSWORD) $(MYSQL_DATABASE)
+
+dev-up:
+	docker compose up -d --build
+
+dev-down:
+	docker compose down -v
 	
 test: test-up wait-db
-	@./scripts/test.sh .env
+	@./scripts/test.sh .test.env
 	@$(MAKE) test-down
 
 test-up:

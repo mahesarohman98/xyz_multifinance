@@ -81,7 +81,7 @@ func (m MysqlCustomerRepository) create(
 			)
 		`, createdDbCustomer)
 	if err != nil {
-		return errors.Wrap(err, "unable to create hour")
+		return errors.Wrap(err, "unable to create customer")
 	}
 	return nil
 }
