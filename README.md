@@ -9,6 +9,7 @@ A backend service for handling customer registration, credit limits, and loan tr
 ```
 /api        # API specifications (for generating clients, docs, etc.)
 /docker     # Dockerfiles for development and production environments
+/images     # Contain images for doc purpose
 /notes      # Personal notes and scratchpad
 /scripts    # Helper shell scripts
 /sql        # Database schema and migration files
