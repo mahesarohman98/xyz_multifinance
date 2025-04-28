@@ -17,4 +17,5 @@ type Commands struct {
 
 type Queries struct {
 	GetTotalUsedByCustomerAndTenor query.GetTotalUsedByCustomerAndTenorHandler
+	GetCreditLimitByCustomerID     query.GetCreditLimitByCustomerIDHandler
 }

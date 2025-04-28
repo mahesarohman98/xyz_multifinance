@@ -9,6 +9,7 @@ openapi_http:
 	@./scripts/openapi-http.sh customer src/internal/customer/ports ports
 	@./scripts/openapi-http.sh creditlimit src/internal/creditlimit/ports ports
 	@./scripts/openapi-http.sh transaction src/internal/transaction/ports ports
+	@./scripts/openapi-http.sh source src/internal/source/handler handler
 
 .PHONY: mycli
 mysql:

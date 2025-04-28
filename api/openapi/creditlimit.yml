@@ -18,12 +18,56 @@ servers:
         default: localhost:3000
 paths:
   /customers/{customerId}/credit-limits:
+    get:
+      summary: Get Initial Credit Limits
+      description: |
+        This endpoint retrieves the initial credit limits available for a specific customer,
+        categorized by different month ranges (tenors).
+        ```
+      operationId: GetInitialCreditLimit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Initial credit limits retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenorLimits"
+              example:
+                - monthRange: 1
+                  limitAmount: 1000000
+                - monthRange: 2
+                  limitAmount: 2000000
+                - monthRange: 3
+                  limitAmount: 3000000
+                - monthRange: 6
+                  limitAmount: 6000000
+        default:
+          description: Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: "500"
+                message: "Internal Server Error"
+
     post:
       summary: Set Initial Credit Limit
       description: |
         This endpoint allows setting the initial credit limit for a customer.
         Typically used after customer verification by an admin.
       operationId: SetInitialCreditLimit
+      security:
+        - bearerAuth: []
       parameters:
         - name: customerId
           in: path
@@ -37,7 +81,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InitialTenorLimits"
+              $ref: "#/components/schemas/TenorLimits"
             example:
               - monthRange: 1
                 limitAmount: 1000000
@@ -67,8 +111,13 @@ paths:
                 message: "Internal Server Error"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-    InitialTenorLimits:
+    TenorLimits:
       type: array
       description: List of initial credit limits for different tenor periods.
       items:
@@ -86,6 +135,10 @@ components:
             format: double
             description: Maximum credit limit for the given tenor.
             example: 15000000.00
+          usedAmount:
+            type: number
+            format: double
+            readOnly: true
 
     Message:
       type: object

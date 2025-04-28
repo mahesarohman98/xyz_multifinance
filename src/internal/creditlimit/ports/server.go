@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"xyz_multifinance/src/internal/creditlimit/app"
 	"xyz_multifinance/src/internal/creditlimit/app/command"
+	"xyz_multifinance/src/internal/creditlimit/app/query"
 	"xyz_multifinance/src/internal/shared/server/httperr"
 
 	"github.com/go-chi/render"
@@ -50,4 +51,32 @@ func (h HttpServer) SetInitialCreditLimit(w http.ResponseWriter, r *http.Request
 		Message: "Initial credit limits created successfully.",
 	})
 
+}
+
+func (h HttpServer) GetInitialCreditLimit(w http.ResponseWriter, r *http.Request, customerId string) {
+	creditLimit, err := h.service.Queries.GetCreditLimitByCustomerID.Handle(
+		r.Context(),
+		query.GetCreditLimitByCustomerID{
+			CustomerID: customerId},
+	)
+	if err != nil {
+		httperr.RespondWithSlugError(err, w, r)
+		return
+	}
+
+	var response TenorLimits
+	for _, t := range creditLimit.Tenors {
+		response = append(response, struct {
+			LimitAmount float64  "json:\"limitAmount\""
+			MonthRange  int      "json:\"monthRange\""
+			UsedAmount  *float64 "json:\"usedAmount,omitempty\""
+		}{
+			LimitAmount: t.LimitAmount,
+			MonthRange:  t.MonthRange,
+			UsedAmount:  &t.UsedAmount,
+		})
+	}
+
+	w.WriteHeader(http.StatusOK)
+	render.Respond(w, r, response)
 }

@@ -24,6 +24,8 @@ paths:
         This endpoint allows customers to submit a loan application
         with details of the assets they want to finance.
       operationId: SubmitLoan
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         description: Loan application details.
@@ -72,6 +74,11 @@ paths:
                 code: "500"
                 message: "Internal Server Error."
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Loan:
       type: object

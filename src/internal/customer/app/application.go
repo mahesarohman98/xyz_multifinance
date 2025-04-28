@@ -1,6 +1,9 @@
 package app
 
-import "xyz_multifinance/src/internal/customer/app/command"
+import (
+	"xyz_multifinance/src/internal/customer/app/command"
+	"xyz_multifinance/src/internal/customer/app/query"
+)
 
 type Application struct {
 	Commands Commands
@@ -12,4 +15,5 @@ type Commands struct {
 }
 
 type Queries struct {
+	GetCustomerByID query.GetCustomerByIDHandler
 }

@@ -25,6 +25,24 @@ type mysqlCustomer struct {
 	UpdatedAt    time.Time `db:"updated_at"`
 }
 
+func unmarshallToDomain(record mysqlCustomer) *customer.Customer {
+	return &customer.Customer{
+		ID:        record.CustomerID,
+		NIK:       record.NIK,
+		Fullname:  record.FullName,
+		LegalName: record.LegalName,
+		PlaceAndDateOfBirth: customer.PlaceAndDateOfBirth{
+			Place: record.PlaceOfBirth,
+			Date:  record.DateOfBirth,
+		},
+		Wage:     record.Wages,
+		PhotoURL: record.PhotoURL,
+		KTPURL:   record.KTPPhotoURL,
+		CreateAt: record.CreatedAt,
+		UpdateAt: record.UpdatedAt,
+	}
+}
+
 type MysqlCustomerRepository struct {
 	db *sqlx.DB
 }
@@ -33,6 +51,32 @@ func NewMysqlCustomerRepository(db *sqlx.DB) *MysqlCustomerRepository {
 	return &MysqlCustomerRepository{
 		db: db,
 	}
+}
+
+func (m MysqlCustomerRepository) GetCustomer(
+	ctx context.Context,
+	customerID string,
+) (*customer.Customer, error) {
+	row := m.db.QueryRowContext(
+		ctx, `
+		SELECT 
+			customer_id, nik, full_name, legal_name, place_of_birth,
+			date_of_birth, wages, ktp_photo_url, photo_url,
+			created_at, updated_at
+		FROM Customers tl 
+		WHERE tl.customer_id = ?`, customerID)
+
+	var customerDb mysqlCustomer
+	if err := row.Scan(
+		&customerDb.CustomerID, &customerDb.NIK, &customerDb.FullName, &customerDb.LegalName, &customerDb.PlaceOfBirth,
+		&customerDb.DateOfBirth, &customerDb.Wages, &customerDb.KTPPhotoURL, &customerDb.PhotoURL,
+		&customerDb.CreatedAt, &customerDb.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+
+	customer := unmarshallToDomain(customerDb)
+	return customer, nil
 }
 
 func (m MysqlCustomerRepository) Create(
